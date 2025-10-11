@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MobileWeb - 台灣手機電商平台
 
-## Getting Started
+提供台灣市面上所有手機的產品資料，包括規格、價格、圖片及網路評測。
 
-First, run the development server:
+## 技術堆疊
+
+- **前端框架**: Next.js 15.5 (App Router)
+- **UI 框架**: Tailwind CSS 4
+- **資料庫**: Neon (Serverless Postgres)
+- **部署平台**: Vercel
+- **開發語言**: TypeScript
+
+## 快速開始
+
+### 1. 環境設定
+
+複製環境變數範本並填入你的 Neon 資料庫連線字串：
+
+```bash
+cp .env.local.example .env.local
+```
+
+編輯 `.env.local` 並填入你的資料庫連線字串：
+
+```env
+DATABASE_URL=postgresql://[user]:[password]@[host]/[database]?sslmode=require
+```
+
+### 2. 安裝依賴
+
+```bash
+npm install
+```
+
+### 3. 建立資料庫
+
+連線到你的 Neon 資料庫，執行 `lib/schema.sql` 檔案建立所需的資料表。
+
+### 4. 啟動開發伺服器
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+開啟瀏覽器訪問 [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 專案結構
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+├── layout.tsx           # 全域佈局
+├── page.tsx             # 首頁（熱門手機 Top 20）
+├── brand/[brandName]/   # 品牌頁面
+└── phone/[phoneId]/     # 手機詳細頁
+lib/
+├── db.ts                # Neon 資料庫連線
+└── schema.sql           # 資料庫結構定義
+```
 
-## Learn More
+## 功能特色
 
-To learn more about Next.js, take a look at the following resources:
+- 🏠 **首頁**：顯示本月最熱門手機前 20 名
+- 📱 **品牌頁面**：列出該品牌所有手機型號
+- 📊 **手機詳細頁**：完整規格、價格對比、網路評測連結
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 開發指令
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev    # 開發模式
+npm run build  # 建置專案
+npm start      # 啟動生產環境
+npm run lint   # 執行 ESLint
+```
