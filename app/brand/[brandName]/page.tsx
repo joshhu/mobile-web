@@ -100,7 +100,7 @@ export default async function BrandPage({
                   <img
                     src={phone.image_url}
                     alt={phone.model_name}
-                    className="w-full h-56 object-cover"
+                    className="w-full h-56 object-contain bg-white"
                   />
                 ) : (
                   <div className="w-full h-56 bg-gray-200 flex items-center justify-center">

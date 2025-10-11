@@ -122,7 +122,7 @@ export default async function PhonePage({
                 <img
                   src={phone.image_url}
                   alt={`${phone.brand_name} ${phone.model_name}`}
-                  className="w-full rounded-lg mb-6"
+                  className="w-full h-96 object-contain rounded-lg mb-6 bg-white"
                 />
               ) : (
                 <div className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center mb-6">

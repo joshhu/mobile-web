@@ -76,7 +76,7 @@ export default async function Home() {
                     <img
                       src={phone.image_url}
                       alt={phone.model_name}
-                      className="w-full h-48 object-cover"
+                      className="w-full h-48 object-contain bg-white"
                     />
                   ) : (
                     <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
