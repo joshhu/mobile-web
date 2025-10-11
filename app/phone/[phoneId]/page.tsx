@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { sql } from '@/lib/db';
 import { notFound } from 'next/navigation';
+import Header from '@/components/Header';
 
 // 手機完整資料介面
 interface PhoneDetail {
@@ -108,23 +109,7 @@ export default async function PhonePage({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 導航列 */}
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex gap-4">
-            <Link href="/" className="text-sm text-blue-600 hover:text-blue-800">
-              首頁
-            </Link>
-            <span className="text-gray-400">|</span>
-            <Link
-              href={`/brand/${encodeURIComponent(phone.brand_name)}`}
-              className="text-sm text-blue-600 hover:text-blue-800"
-            >
-              {phone.brand_name}
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       {/* 主要內容 */}
       <main className="max-w-7xl mx-auto px-4 py-8">

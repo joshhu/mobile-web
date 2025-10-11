@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { sql } from '@/lib/db';
 import { notFound } from 'next/navigation';
+import Header from '@/components/Header';
 
 // 手機介面
 interface Phone {
@@ -74,17 +75,7 @@ export default async function BrandPage({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 導航列 */}
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <Link
-            href="/"
-            className="text-sm text-blue-600 hover:text-blue-800"
-          >
-            ← 返回首頁
-          </Link>
-        </div>
-      </nav>
+      <Header />
 
       {/* 主要內容 */}
       <main className="max-w-7xl mx-auto px-4 py-8">

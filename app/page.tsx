@@ -1,12 +1,6 @@
 import Link from 'next/link';
 import { sql } from '@/lib/db';
-
-// 品牌介面
-interface Brand {
-  id: number;
-  name: string;
-  logo_url: string | null;
-}
+import Header from '@/components/Header';
 
 // 手機介面
 interface Phone {
@@ -17,21 +11,6 @@ interface Phone {
   official_price: number | null;
   image_url: string | null;
   popularity_score: number;
-}
-
-// 取得熱門品牌
-async function getBrands(): Promise<Brand[]> {
-  try {
-    const brands = await sql`
-      SELECT id, name, logo_url
-      FROM brands
-      ORDER BY name
-    `;
-    return brands as Brand[];
-  } catch (error) {
-    console.error('取得品牌資料失敗:', error);
-    return [];
-  }
 }
 
 // 取得本月最紅手機前 20 名
@@ -59,32 +38,11 @@ async function getPopularPhones(): Promise<Phone[]> {
 }
 
 export default async function Home() {
-  const [brands, popularPhones] = await Promise.all([
-    getBrands(),
-    getPopularPhones(),
-  ]);
+  const popularPhones = await getPopularPhones();
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 品牌導航列 */}
-      <nav className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-2 overflow-x-auto">
-            <span className="text-sm font-medium text-gray-700 whitespace-nowrap">品牌：</span>
-            <div className="flex gap-3">
-              {brands.map((brand) => (
-                <Link
-                  key={brand.id}
-                  href={`/brand/${encodeURIComponent(brand.name)}`}
-                  className="text-sm text-blue-600 hover:text-blue-800 whitespace-nowrap"
-                >
-                  {brand.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       {/* 主要內容 */}
       <main className="max-w-7xl mx-auto px-4 py-8">

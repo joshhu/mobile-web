@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "scraper": "tsx scripts/scraper.ts",
+    "scraper:full": "tsx scripts/scraper-full.ts",
     "verify": "tsx scripts/verify-data.ts"
   },
   "dependencies": {
