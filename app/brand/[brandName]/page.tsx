@@ -166,8 +166,8 @@ export default async function BrandPage({
 export async function generateStaticParams() {
   try {
     const brands = await sql`SELECT name FROM brands`;
-    return brands.map((brand: { name: string }) => ({
-      brandName: brand.name,
+    return brands.map((brand) => ({
+      brandName: String((brand as { name: string }).name),
     }));
   } catch (error) {
     console.error('產生靜態參數失敗:', error);
