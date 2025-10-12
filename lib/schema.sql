@@ -61,3 +61,57 @@ INSERT INTO brands (name, logo_url) VALUES
   ('HTC', '/brands/htc.png'),
   ('ASUS', '/brands/asus.png')
 ON CONFLICT (name) DO NOTHING;
+
+-- ========================================
+-- Auth.js / NextAuth 認證資料表
+-- ========================================
+
+-- 使用者認證資料表
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255),
+  email VARCHAR(255) UNIQUE NOT NULL,
+  "emailVerified" TIMESTAMPTZ,
+  image TEXT,
+  password TEXT,  -- 用於 email/password 登入（bcrypt 加密）
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- OAuth 帳號連結
+CREATE TABLE IF NOT EXISTS accounts (
+  id SERIAL PRIMARY KEY,
+  "userId" INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  type VARCHAR(255) NOT NULL,
+  provider VARCHAR(255) NOT NULL,
+  "providerAccountId" VARCHAR(255) NOT NULL,
+  refresh_token TEXT,
+  access_token TEXT,
+  expires_at BIGINT,
+  token_type TEXT,
+  scope TEXT,
+  id_token TEXT,
+  session_state TEXT,
+  UNIQUE(provider, "providerAccountId")
+);
+
+-- Session 管理
+CREATE TABLE IF NOT EXISTS sessions (
+  id SERIAL PRIMARY KEY,
+  "sessionToken" VARCHAR(255) UNIQUE NOT NULL,
+  "userId" INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  expires TIMESTAMPTZ NOT NULL
+);
+
+-- Email 驗證 token
+CREATE TABLE IF NOT EXISTS verification_token (
+  identifier TEXT NOT NULL,
+  token TEXT NOT NULL,
+  expires TIMESTAMPTZ NOT NULL,
+  PRIMARY KEY (identifier, token)
+);
+
+-- 建立認證相關索引
+CREATE INDEX IF NOT EXISTS idx_accounts_user_id ON accounts("userId");
+CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions("userId");
+CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions("sessionToken");
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
