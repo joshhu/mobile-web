@@ -10,7 +10,8 @@
     "scraper": "tsx scripts/scraper.ts",
     "scraper:full": "tsx scripts/scraper-full.ts",
     "verify": "tsx scripts/verify-data.ts",
-    "migrate:auth": "tsx scripts/migrate-auth.ts"
+    "migrate:auth": "tsx scripts/migrate-auth.ts",
+    "test:register": "tsx scripts/test-register.ts"
   },
   "dependencies": {
     "@auth/neon-adapter": "^1.11.0",

@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     const result = await sql`
       INSERT INTO users (name, email, password)
       VALUES (${name}, ${email}, ${hashedPassword})
-      RETURNING id, name, email, created_at
+      RETURNING id, name, email
     `
 
     return NextResponse.json({
