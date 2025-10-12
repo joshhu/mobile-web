@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { sql } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
+import AddToCartButton from '@/components/AddToCartButton';
+import { auth } from '@/lib/auth';
 
 // 手機完整資料介面
 interface PhoneDetail {
@@ -98,9 +100,10 @@ export default async function PhonePage({
 }) {
   const { phoneId } = await params;
 
-  const [phone, reviews] = await Promise.all([
+  const [phone, reviews, session] = await Promise.all([
     getPhoneDetail(phoneId),
     getReviews(phoneId),
+    auth(),
   ]);
 
   if (!phone) {
@@ -131,7 +134,7 @@ export default async function PhonePage({
               )}
 
               {/* 價格資訊 */}
-              <div className="space-y-3">
+              <div className="space-y-3 mb-6">
                 <h2 className="text-xl font-bold text-gray-900">價格資訊</h2>
                 {phone.official_price && (
                   <div>
@@ -158,6 +161,12 @@ export default async function PhonePage({
                   <p className="text-gray-400">價格未定</p>
                 )}
               </div>
+
+              {/* 加入購物車按鈕 */}
+              <AddToCartButton
+                phoneId={phone.id}
+                isLoggedIn={!!session?.user}
+              />
             </div>
           </div>
 

@@ -22,9 +22,8 @@ export async function GET() {
         ci.quantity,
         ci.created_at,
         p.id as phone_id,
-        p.model_name,
-        p.our_price,
-        p.official_price,
+        p.model_name as phone_name,
+        COALESCE(p.our_price, p.official_price, 0) as price,
         p.image_url,
         b.name as brand_name
       FROM cart_items ci
@@ -34,19 +33,21 @@ export async function GET() {
       ORDER BY ci.created_at DESC
     `
 
+    // 格式化資料並計算小計
+    const items = cartItems.map(item => ({
+      ...item,
+      item_total: item.price * item.quantity
+    }))
+
     // 計算總數量和總金額
-    const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0)
-    const totalAmount = cartItems.reduce(
-      (sum, item) => sum + (item.our_price || item.official_price || 0) * item.quantity,
-      0
-    )
+    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
+    const totalAmount = items.reduce((sum, item) => sum + item.item_total, 0)
 
     return NextResponse.json({
-      items: cartItems,
+      items,
       summary: {
-        totalQuantity,
-        totalAmount,
-        itemCount: cartItems.length,
+        total_items: totalItems,
+        total_amount: totalAmount,
       }
     })
   } catch (error) {
