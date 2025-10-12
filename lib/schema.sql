@@ -134,3 +134,51 @@ CREATE TABLE IF NOT EXISTS cart_items (
 -- 建立購物車相關索引
 CREATE INDEX IF NOT EXISTS idx_cart_items_user_id ON cart_items(user_id);
 CREATE INDEX IF NOT EXISTS idx_cart_items_phone_id ON cart_items(phone_id);
+
+-- ========================================
+-- 訂單資料表
+-- ========================================
+
+-- 訂單主檔
+CREATE TABLE IF NOT EXISTS orders (
+  id SERIAL PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  order_number VARCHAR(50) UNIQUE NOT NULL,  -- 訂單編號（例如：ORD-20250113-0001）
+  status VARCHAR(50) NOT NULL DEFAULT 'pending',  -- pending, paid, processing, shipped, delivered, cancelled
+  total_amount INTEGER NOT NULL,  -- 訂單總金額
+
+  -- 付款資訊
+  payment_method VARCHAR(50) NOT NULL,  -- credit_card, bank_transfer, etc.
+  payment_status VARCHAR(50) NOT NULL DEFAULT 'unpaid',  -- unpaid, paid, refunded
+
+  -- 配送資訊
+  recipient_name VARCHAR(100) NOT NULL,
+  recipient_phone VARCHAR(20) NOT NULL,
+  shipping_address TEXT NOT NULL,
+
+  -- 時間戳記
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  paid_at TIMESTAMP,
+  shipped_at TIMESTAMP,
+  delivered_at TIMESTAMP
+);
+
+-- 訂單明細
+CREATE TABLE IF NOT EXISTS order_items (
+  id SERIAL PRIMARY KEY,
+  order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  phone_id INTEGER NOT NULL REFERENCES phones(id),
+  phone_name VARCHAR(200) NOT NULL,  -- 記錄當時的手機名稱
+  brand_name VARCHAR(100) NOT NULL,  -- 記錄當時的品牌名稱
+  price INTEGER NOT NULL,  -- 記錄當時的價格
+  quantity INTEGER NOT NULL CHECK (quantity > 0),
+  subtotal INTEGER NOT NULL,  -- 小計（price * quantity）
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 建立訂單相關索引
+CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_orders_order_number ON orders(order_number);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_phone_id ON order_items(phone_id);

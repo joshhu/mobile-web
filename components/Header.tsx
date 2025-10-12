@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { sql } from '@/lib/db';
 import { auth } from '@/lib/auth';
+import UserDropdown from '@/components/UserDropdown';
 
 // 品牌介面
 interface Brand {
@@ -84,17 +85,8 @@ export default async function Header() {
                   )}
                 </Link>
 
-                <span className="text-sm text-gray-700 hidden sm:inline">
-                  歡迎，{session.user?.name || session.user?.email}
-                </span>
-                <form action="/api/auth/signout" method="POST">
-                  <button
-                    type="submit"
-                    className="text-sm px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
-                  >
-                    登出
-                  </button>
-                </form>
+                {/* 使用者下拉選單 */}
+                <UserDropdown userName={session.user?.name || session.user?.email} />
               </>
             ) : (
               <Link

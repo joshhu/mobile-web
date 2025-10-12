@@ -12,7 +12,8 @@
       "Bash(git push:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\n新增使用者認證功能 - Auth.js + Neon 整合\n\n- 安裝 Auth.js (next-auth@beta) 與相關依賴\n- 建立認證資料表結構 (users, accounts, sessions, verification_token)\n- 實作 Email/Password 登入功能\n- 新增登入頁面與表單元件\n- 更新 Header 顯示登入狀態\n- 建立註冊 API endpoint\n- 新增資料庫 migration script\n\n功能特色：\n✅ JWT-based session（適合 serverless）\n✅ Bcrypt 密碼加密\n✅ Zod 表單驗證\n✅ 完整的登入/登出流程\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git commit:*)",
-      "Bash(npm run migrate:cart:*)"
+      "Bash(npm run migrate:cart:*)",
+      "Bash(npx tsx:*)"
     ],
     "deny": [],
     "ask": []
