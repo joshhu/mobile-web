@@ -1,0 +1,164 @@
+import { NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
+import { sql } from "@/lib/db"
+import { z } from "zod"
+
+// GET - 取得使用者的購物車
+export async function GET() {
+  try {
+    const session = await auth()
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "請先登入" },
+        { status: 401 }
+      )
+    }
+
+    // 查詢購物車項目（包含手機資訊）
+    const cartItems = await sql`
+      SELECT
+        ci.id,
+        ci.quantity,
+        ci.created_at,
+        p.id as phone_id,
+        p.model_name,
+        p.our_price,
+        p.official_price,
+        p.image_url,
+        b.name as brand_name
+      FROM cart_items ci
+      JOIN phones p ON ci.phone_id = p.id
+      JOIN brands b ON p.brand_id = b.id
+      WHERE ci.user_id = ${session.user.id}
+      ORDER BY ci.created_at DESC
+    `
+
+    // 計算總數量和總金額
+    const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+    const totalAmount = cartItems.reduce(
+      (sum, item) => sum + (item.our_price || item.official_price || 0) * item.quantity,
+      0
+    )
+
+    return NextResponse.json({
+      items: cartItems,
+      summary: {
+        totalQuantity,
+        totalAmount,
+        itemCount: cartItems.length,
+      }
+    })
+  } catch (error) {
+    console.error("Get cart error:", error)
+    return NextResponse.json(
+      { error: "取得購物車失敗" },
+      { status: 500 }
+    )
+  }
+}
+
+// POST - 新增或更新購物車項目
+const addToCartSchema = z.object({
+  phoneId: z.number(),
+  quantity: z.number().min(1).max(99),
+})
+
+export async function POST(request: Request) {
+  try {
+    const session = await auth()
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "請先登入" },
+        { status: 401 }
+      )
+    }
+
+    const body = await request.json()
+    const { phoneId, quantity } = addToCartSchema.parse(body)
+
+    // 檢查手機是否存在
+    const phone = await sql`
+      SELECT id FROM phones WHERE id = ${phoneId}
+    `
+
+    if (phone.length === 0) {
+      return NextResponse.json(
+        { error: "手機不存在" },
+        { status: 404 }
+      )
+    }
+
+    // 檢查是否已在購物車中
+    const existing = await sql`
+      SELECT id, quantity FROM cart_items
+      WHERE user_id = ${session.user.id} AND phone_id = ${phoneId}
+    `
+
+    if (existing.length > 0) {
+      // 更新數量
+      const newQuantity = existing[0].quantity + quantity
+      await sql`
+        UPDATE cart_items
+        SET quantity = ${newQuantity}, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ${existing[0].id}
+      `
+      return NextResponse.json({
+        message: "已更新購物車數量",
+        quantity: newQuantity
+      })
+    } else {
+      // 新增項目
+      await sql`
+        INSERT INTO cart_items (user_id, phone_id, quantity)
+        VALUES (${session.user.id}, ${phoneId}, ${quantity})
+      `
+      return NextResponse.json({
+        message: "已加入購物車"
+      }, { status: 201 })
+    }
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: error.errors[0].message },
+        { status: 400 }
+      )
+    }
+
+    console.error("Add to cart error:", error)
+    return NextResponse.json(
+      { error: "加入購物車失敗" },
+      { status: 500 }
+    )
+  }
+}
+
+// DELETE - 清空購物車
+export async function DELETE() {
+  try {
+    const session = await auth()
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "請先登入" },
+        { status: 401 }
+      )
+    }
+
+    await sql`
+      DELETE FROM cart_items
+      WHERE user_id = ${session.user.id}
+    `
+
+    return NextResponse.json({
+      message: "購物車已清空"
+    })
+  } catch (error) {
+    console.error("Clear cart error:", error)
+    return NextResponse.json(
+      { error: "清空購物車失敗" },
+      { status: 500 }
+    )
+  }
+}

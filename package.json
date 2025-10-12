@@ -11,6 +11,7 @@
     "scraper:full": "tsx scripts/scraper-full.ts",
     "verify": "tsx scripts/verify-data.ts",
     "migrate:auth": "tsx scripts/migrate-auth.ts",
+    "migrate:cart": "tsx scripts/migrate-cart.ts",
     "test:register": "tsx scripts/test-register.ts"
   },
   "dependencies": {

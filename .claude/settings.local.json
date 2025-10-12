@@ -11,7 +11,8 @@
       "Bash(git commit -m \"$(cat <<''EOF''\n新增 Vercel 部署配置 - 準備部署到生產環境\n\n- 在 next.config.ts 中新增圖片網域白名單（支援 sogi.com.tw）\n- 建立 vercel.json 設定檔案，指定建置與部署參數\n- 為 Vercel 部署做好準備\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git push:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\n新增使用者認證功能 - Auth.js + Neon 整合\n\n- 安裝 Auth.js (next-auth@beta) 與相關依賴\n- 建立認證資料表結構 (users, accounts, sessions, verification_token)\n- 實作 Email/Password 登入功能\n- 新增登入頁面與表單元件\n- 更新 Header 顯示登入狀態\n- 建立註冊 API endpoint\n- 新增資料庫 migration script\n\n功能特色：\n✅ JWT-based session（適合 serverless）\n✅ Bcrypt 密碼加密\n✅ Zod 表單驗證\n✅ 完整的登入/登出流程\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm run migrate:cart:*)"
     ],
     "deny": [],
     "ask": []

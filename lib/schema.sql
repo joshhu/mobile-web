@@ -115,3 +115,22 @@ CREATE INDEX IF NOT EXISTS idx_accounts_user_id ON accounts("userId");
 CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions("userId");
 CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions("sessionToken");
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
+-- ========================================
+-- 購物車資料表
+-- ========================================
+
+-- 購物車項目
+CREATE TABLE IF NOT EXISTS cart_items (
+  id SERIAL PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  phone_id INTEGER NOT NULL REFERENCES phones(id) ON DELETE CASCADE,
+  quantity INTEGER NOT NULL DEFAULT 1 CHECK (quantity > 0),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, phone_id)  -- 每個使用者對每支手機只能有一個購物車項目
+);
+
+-- 建立購物車相關索引
+CREATE INDEX IF NOT EXISTS idx_cart_items_user_id ON cart_items(user_id);
+CREATE INDEX IF NOT EXISTS idx_cart_items_phone_id ON cart_items(phone_id);
