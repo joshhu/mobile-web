@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { sql } from "@/lib/db"
 import Header from "@/components/Header"
 import OrderList from "@/components/OrderList"
+import Link from "next/link"
 
 interface Order {
   id: number
@@ -59,12 +60,12 @@ export default async function OrdersPage() {
         {orders.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-8 text-center">
             <p className="text-gray-500 text-lg mb-4">目前沒有任何訂單</p>
-            <a
+            <Link
               href="/"
               className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
             >
               開始購物
-            </a>
+            </Link>
           </div>
         ) : (
           <OrderList orders={orders} />

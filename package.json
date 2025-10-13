@@ -13,6 +13,7 @@
     "migrate:auth": "tsx scripts/migrate-auth.ts",
     "migrate:cart": "tsx scripts/migrate-cart.ts",
     "migrate:orders": "tsx scripts/migrate-orders.ts",
+    "deploy:setup": "tsx scripts/deploy-setup.ts",
     "test:register": "tsx scripts/test-register.ts"
   },
   "dependencies": {
