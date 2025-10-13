@@ -23,13 +23,20 @@ async function getCartSummary(userId: string) {
       ORDER BY ci.created_at DESC
     `
 
-    const items = cartItems.map(item => ({
-      ...item,
-      subtotal: item.price * item.quantity
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const items = cartItems.map((item: any) => ({
+      id: item.id,
+      quantity: item.quantity,
+      phone_id: item.phone_id,
+      phone_name: item.phone_name,
+      brand_name: item.brand_name,
+      price: item.price,
+      image_url: item.image_url,
+      subtotal: Number(item.price) * Number(item.quantity)
     }))
 
-    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
-    const totalAmount = items.reduce((sum, item) => sum + item.subtotal, 0)
+    const totalItems = items.reduce((sum, item) => sum + Number(item.quantity), 0)
+    const totalAmount = items.reduce((sum, item) => sum + Number(item.subtotal), 0)
 
     return {
       items,

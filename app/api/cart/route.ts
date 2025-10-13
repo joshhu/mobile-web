@@ -34,14 +34,22 @@ export async function GET() {
     `
 
     // 格式化資料並計算小計
-    const items = cartItems.map(item => ({
-      ...item,
-      item_total: item.price * item.quantity
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const items = cartItems.map((item: any) => ({
+      id: item.id,
+      quantity: item.quantity,
+      created_at: item.created_at,
+      phone_id: item.phone_id,
+      phone_name: item.phone_name,
+      price: item.price,
+      image_url: item.image_url,
+      brand_name: item.brand_name,
+      item_total: Number(item.price) * Number(item.quantity)
     }))
 
     // 計算總數量和總金額
-    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
-    const totalAmount = items.reduce((sum, item) => sum + item.item_total, 0)
+    const totalItems = items.reduce((sum, item) => sum + Number(item.quantity), 0)
+    const totalAmount = items.reduce((sum, item) => sum + Number(item.item_total), 0)
 
     return NextResponse.json({
       items,
@@ -121,8 +129,9 @@ export async function POST(request: Request) {
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
+      const firstError = error.issues[0]
       return NextResponse.json(
-        { error: error.errors[0].message },
+        { error: firstError?.message || "驗證失敗" },
         { status: 400 }
       )
     }
